@@ -58,13 +58,44 @@ namespace logger
 
     bool Logger::WriteToLog(const std::string &event, LogLevel level)
     {
+
         if (target_ & LOG_TO_FILE)
         {
+            std::string log_level;
+            switch (level)
+            {
+            case LogLevel::TRACE_LEVEL:
+            {
+                log_level = " Trace: ";
+                break;
+            }
+            case LogLevel::DEBUG_LEVEL:
+            {
+                log_level = " Debug: ";
+                break;
+            }
+            case LogLevel::INFO_LEVEL:
+            {
+                log_level = " Info: ";
+                break;
+            }
+            case LogLevel::ERROR_LEVEL:
+            {
+                log_level = " Error: ";
+                break;
+            }
+            case LogLevel::FATAL_LEVEL:
+            {
+                log_level = " Fatal: ";
+                break;
+            }
+            }
             std::lock_guard<std::mutex> guard(mu_);
             std::fstream out(log_filename_, std::ios::app);
-            out << GetTime() << " " << event << std::endl;
+            out << GetTime() << log_level << event << std::endl;
             out.close();
         }
+        
         if (target_ & LOG_TO_CONSOLE)
         {
 
